@@ -8,17 +8,17 @@ class psmxchristmas extends Module
 {
     public function __construct()
     {
-        $this->name = 'psxmchristmas';
+        $this->name = 'psmxchristmas';
         $this->tab = 'front_office_features';
-        $this->version = '1.0.0';
-        $this->author = 'AI Assistant';
+        $this->version = '2.0.0';
+        $this->author = 'PSMX';
         $this->need_instance = 0;
         $this->bootstrap = true;
 
         parent::__construct();
 
-        $this->displayName = $this->l('Luces Navideñas');
-        $this->description = $this->l('Añade luces navideñas animadas al inicio de tu tienda.');
+        $this->displayName = $this->l('Decoraciones Navideñas PSMX');
+        $this->description = $this->l('Sistema profesional de decoraciones navideñas con luces, nieve, estrellas y confeti. Totalmente configurable.');
 
         $this->ps_versions_compliancy = array('min' => '8.0.0', 'max' => _PS_VERSION_);
     }
@@ -39,12 +39,12 @@ class psmxchristmas extends Module
     {
         // Añadimos el CSS y JS necesario
         $this->context->controller->registerStylesheet(
-            'module-psxmchristmas-style',
+            'module-psmxchristmas-style',
             'modules/'.$this->name.'/views/css/christmas.css'
         );
 
         $this->context->controller->registerJavascript(
-            'module-psxmchristmas-script',
+            'module-psmxchristmas-script',
             'modules/'.$this->name.'/views/js/christmas.js',
             ['position' => 'bottom', 'priority' => 150]
         );
@@ -52,6 +52,7 @@ class psmxchristmas extends Module
 
     public function hookDisplayHome($params)
     {
-        return $this->display(__FILE__, 'psxmchristmas.tpl');
+        // Las decoraciones se cargan automáticamente via JS
+        return '';
     }
 }
