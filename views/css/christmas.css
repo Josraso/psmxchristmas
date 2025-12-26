@@ -1,33 +1,528 @@
-.christmas-lights {
+/**
+ * Estilos para Decoraciones Navideñas Profesionales
+ * Incluye: Panel de control, Luces, Nieve, Estrellas, Confeti
+ */
+
+/* ========================================
+   PANEL DE CONTROL
+   ======================================== */
+
+.psmx-christmas-panel {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+}
+
+.psmx-panel-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #c41e3a 0%, #165b33 100%);
+    border-radius: 50%;
     display: flex;
+    align-items: center;
     justify-content: center;
-    padding: 0.5rem 0;
-    background: transparent;
-    z-index: 1002;
-    position: relative;
+    cursor: pointer;
+    z-index: 10000;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-.christmas-lights .bulb {
-    width: 16px;
-    height: 24px;
-    margin: 0 4px;
-    border-radius: 50% 50% 60% 60%;
-    background: red;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-    animation: blink 2s infinite alternate;
+
+.psmx-panel-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
-.christmas-lights .bulb:nth-child(2n) { background: green; }
-.christmas-lights .bulb:nth-child(3n) { background: yellow; }
-.christmas-lights .bulb:nth-child(4n) { background: blue; }
-@keyframes blink {
-    to { opacity: 0.3; }
+
+.psmx-panel-icon {
+    font-size: 32px;
+    animation: pulse 2s ease-in-out infinite;
 }
-#psmxchristmas-snow {
-    width: 100vw;
-    min-height: 120px;
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.psmx-panel-content {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 350px;
+    max-height: 80vh;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    z-index: 10000;
+    transform: translateY(20px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.psmx-panel-content.active {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+.psmx-panel-header {
+    background: linear-gradient(135deg, #c41e3a 0%, #165b33 100%);
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.psmx-panel-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.psmx-panel-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+.psmx-panel-close:hover {
+    transform: rotate(90deg);
+}
+
+.psmx-panel-body {
+    padding: 20px;
+    max-height: calc(80vh - 60px);
+    overflow-y: auto;
+}
+
+/* Secciones de configuración */
+.psmx-config-section {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.psmx-config-section:last-of-type {
+    border-bottom: none;
+}
+
+.psmx-config-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    gap: 12px;
+}
+
+.psmx-config-header h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+.psmx-config-options {
+    margin-left: 52px;
+}
+
+.psmx-config-options label {
     display: block;
-    pointer-events: none;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #555;
+}
+
+.psmx-config-options input[type="range"] {
+    width: 100%;
+    margin-top: 5px;
+}
+
+.psmx-config-options select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin-top: 5px;
+    font-size: 14px;
+}
+
+.psmx-config-options input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+/* Switch toggle */
+.psmx-switch {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 26px;
+    flex-shrink: 0;
+}
+
+.psmx-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.psmx-slider {
     position: absolute;
-    left: 0;
+    cursor: pointer;
     top: 0;
-    z-index: 1001;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 26px;
+}
+
+.psmx-slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .psmx-slider {
+    background: linear-gradient(135deg, #c41e3a 0%, #165b33 100%);
+}
+
+input:checked + .psmx-slider:before {
+    transform: translateX(22px);
+}
+
+/* Botón aplicar */
+.psmx-apply-btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #c41e3a 0%, #165b33 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-top: 10px;
+}
+
+.psmx-apply-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(196, 30, 58, 0.4);
+}
+
+/* Scrollbar personalizada */
+.psmx-panel-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.psmx-panel-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.psmx-panel-body::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #c41e3a 0%, #165b33 100%);
+    border-radius: 4px;
+}
+
+/* ========================================
+   LUCES NAVIDEÑAS
+   ======================================== */
+
+.psmx-christmas-lights {
+    overflow: hidden;
+    padding: 10px 0;
+}
+
+/* Cable de luces */
+.psmx-lights-cable {
+    position: absolute;
+    top: 15px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        #2d2d2d 5%,
+        #2d2d2d 95%,
+        transparent 100%
+    );
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.psmx-lights-cable::before,
+.psmx-lights-cable::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    width: 8px;
+    height: 8px;
+    background: #444;
+    border-radius: 50%;
+}
+
+.psmx-lights-cable::before {
+    left: 20px;
+}
+
+.psmx-lights-cable::after {
+    right: 20px;
+}
+
+/* Contenedor de luces */
+.psmx-lights-wrapper {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    position: relative;
+    padding: 0 20px;
+}
+
+/* Bombillas */
+.psmx-bulb {
+    position: relative;
+    width: 20px;
+    height: 28px;
+    background: var(--bulb-color, #ff0000);
+    border-radius: 50% 50% 60% 60%;
+    box-shadow:
+        0 0 15px var(--bulb-color, #ff0000),
+        0 0 30px var(--bulb-color, #ff0000),
+        inset 0 -5px 10px rgba(0, 0, 0, 0.3),
+        0 8px 15px rgba(0, 0, 0, 0.4);
+    animation: bulb-blink 2s ease-in-out infinite;
+    transform-origin: top center;
+}
+
+/* Cable de conexión de cada bombilla */
+.psmx-bulb::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 8px;
+    background: #2d2d2d;
+}
+
+/* Base metálica de la bombilla */
+.psmx-bulb::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 4px;
+    background: linear-gradient(180deg, #888 0%, #555 100%);
+    border-radius: 2px;
+}
+
+/* Efecto de brillo en la bombilla */
+.psmx-bulb:before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 8px;
+    height: 12px;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.6) 0%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    border-radius: 50%;
+    z-index: 1;
+}
+
+@keyframes bulb-blink {
+    0%, 100% {
+        opacity: 1;
+        filter: brightness(1.2);
+    }
+    50% {
+        opacity: 0.4;
+        filter: brightness(0.6);
+    }
+}
+
+/* Animación de balanceo */
+@keyframes swing {
+    0%, 100% { transform: rotate(-5deg); }
+    50% { transform: rotate(5deg); }
+}
+
+.psmx-bulb:hover {
+    animation: swing 0.5s ease-in-out infinite, bulb-blink 2s ease-in-out infinite;
+}
+
+/* ========================================
+   ESTRELLAS BRILLANTES
+   ======================================== */
+
+.psmx-star {
+    position: absolute;
+    animation: twinkle 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.8));
+}
+
+@keyframes twinkle {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.3;
+        transform: scale(0.8);
+    }
+}
+
+/* ========================================
+   EFECTOS ADICIONALES
+   ======================================== */
+
+/* Sombra suave para los canvas */
+.psmx-snow-canvas,
+.psmx-confetti-canvas {
+    filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.1));
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+    .psmx-panel-content {
+        width: calc(100% - 40px);
+        right: 20px;
+        left: 20px;
+    }
+
+    .psmx-panel-toggle {
+        width: 50px;
+        height: 50px;
+    }
+
+    .psmx-panel-icon {
+        font-size: 26px;
+    }
+
+    .psmx-bulb {
+        width: 16px;
+        height: 22px;
+    }
+
+    .psmx-lights-wrapper {
+        padding: 0 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .psmx-panel-content {
+        max-height: 70vh;
+    }
+
+    .psmx-config-options {
+        margin-left: 0;
+    }
+
+    .psmx-config-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .psmx-bulb {
+        width: 12px;
+        height: 18px;
+    }
+}
+
+/* ========================================
+   ACCESIBILIDAD
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .psmx-bulb,
+    .psmx-star,
+    .psmx-panel-icon {
+        animation: none !important;
+    }
+
+    .psmx-panel-content {
+        transition: none;
+    }
+}
+
+/* Modo oscuro */
+@media (prefers-color-scheme: dark) {
+    .psmx-panel-content {
+        background: #2d2d2d;
+        color: #fff;
+    }
+
+    .psmx-panel-body::-webkit-scrollbar-track {
+        background: #1a1a1a;
+    }
+
+    .psmx-config-section {
+        border-bottom-color: #444;
+    }
+
+    .psmx-config-header h4 {
+        color: #fff;
+    }
+
+    .psmx-config-options label {
+        color: #ccc;
+    }
+
+    .psmx-config-options select {
+        background: #1a1a1a;
+        color: #fff;
+        border-color: #444;
+    }
+}
+
+/* ========================================
+   ANIMACIONES DE ENTRADA
+   ======================================== */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.psmx-christmas-lights {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.psmx-stars-container {
+    animation: fadeInUp 0.8s ease-out;
 }

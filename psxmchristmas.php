@@ -40,12 +40,12 @@ class psmxchristmas extends Module
         // Añadimos el CSS y JS necesario
         $this->context->controller->registerStylesheet(
             'module-psxmchristmas-style',
-            'modules/'.$this->name.'/views/css/psxmchristmas.css'
+            'modules/'.$this->name.'/views/css/christmas.css'
         );
 
         $this->context->controller->registerJavascript(
             'module-psxmchristmas-script',
-            'modules/'.$this->name.'/views/js/psxmchristmas.js',
+            'modules/'.$this->name.'/views/js/christmas.js',
             ['position' => 'bottom', 'priority' => 150]
         );
     }
