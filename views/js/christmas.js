@@ -1,7 +1,7 @@
 /**
  * Sistema de Decoraciones Navideñas Profesional
  * Incluye: Luces, Nieve, Estrellas, Confeti
- * Con panel de configuración completo
+ * Configuración desde el Back Office de PrestaShop
  */
 
 class ChristmasDecorations {
@@ -17,10 +17,10 @@ class ChristmasDecorations {
             },
             snow: {
                 enabled: true,
-                type: 'classic', // classic, stars, mixed
+                type: 'classic',
                 count: 50,
                 speed: 1,
-                size: 'medium', // small, medium, large
+                size: 'medium',
                 opacity: 0.8
             },
             stars: {
@@ -35,8 +35,24 @@ class ChristmasDecorations {
             }
         };
 
-        // Cargar configuración guardada
-        this.loadConfig();
+        // Cargar configuración desde el back office si existe
+        if (typeof psmxChristmasConfig !== 'undefined') {
+            this.config.lights.enabled = psmxChristmasConfig.lights.enabled;
+            this.config.lights.count = psmxChristmasConfig.lights.count;
+            this.config.lights.showCable = psmxChristmasConfig.lights.showCable;
+
+            this.config.snow.enabled = psmxChristmasConfig.snow.enabled;
+            this.config.snow.type = psmxChristmasConfig.snow.type;
+            this.config.snow.count = psmxChristmasConfig.snow.count;
+            this.config.snow.speed = psmxChristmasConfig.snow.speed;
+            this.config.snow.size = psmxChristmasConfig.snow.size;
+
+            this.config.stars.enabled = psmxChristmasConfig.stars.enabled;
+            this.config.stars.count = psmxChristmasConfig.stars.count;
+
+            this.config.confetti.enabled = psmxChristmasConfig.confetti.enabled;
+            this.config.confetti.count = psmxChristmasConfig.confetti.count;
+        }
 
         // Contenedores
         this.containers = {};
@@ -49,28 +65,8 @@ class ChristmasDecorations {
         };
     }
 
-    // Cargar configuración desde localStorage
-    loadConfig() {
-        const saved = localStorage.getItem('psmx_christmas_config');
-        if (saved) {
-            try {
-                const savedConfig = JSON.parse(saved);
-                this.config = { ...this.config, ...savedConfig };
-            } catch (e) {
-                console.error('Error cargando configuración:', e);
-            }
-        }
-    }
-
-    // Guardar configuración
-    saveConfig() {
-        localStorage.setItem('psmx_christmas_config', JSON.stringify(this.config));
-    }
-
     // Inicializar todas las decoraciones
     init() {
-        this.createControlPanel();
-
         if (this.config.lights.enabled) {
             this.initLights();
         }
@@ -86,224 +82,6 @@ class ChristmasDecorations {
         if (this.config.confetti.enabled) {
             this.initConfetti();
         }
-    }
-
-    // Crear panel de control
-    createControlPanel() {
-        const panel = document.createElement('div');
-        panel.id = 'psmx-christmas-panel';
-        panel.className = 'psmx-christmas-panel';
-        panel.innerHTML = `
-            <div class="psmx-panel-toggle" title="Configuración Navideña">
-                <span class="psmx-panel-icon">🎄</span>
-            </div>
-            <div class="psmx-panel-content">
-                <div class="psmx-panel-header">
-                    <h3>🎄 Decoración Navideña</h3>
-                    <button class="psmx-panel-close">&times;</button>
-                </div>
-                <div class="psmx-panel-body">
-                    <!-- Luces -->
-                    <div class="psmx-config-section">
-                        <div class="psmx-config-header">
-                            <label class="psmx-switch">
-                                <input type="checkbox" id="lights-enabled" ${this.config.lights.enabled ? 'checked' : ''}>
-                                <span class="psmx-slider"></span>
-                            </label>
-                            <h4>💡 Luces</h4>
-                        </div>
-                        <div class="psmx-config-options" id="lights-options">
-                            <label>
-                                Cantidad: <span id="lights-count-value">${this.config.lights.count}</span>
-                                <input type="range" id="lights-count" min="10" max="50" value="${this.config.lights.count}">
-                            </label>
-                            <label>
-                                <input type="checkbox" id="lights-cable" ${this.config.lights.showCable ? 'checked' : ''}>
-                                Mostrar cable
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Nieve -->
-                    <div class="psmx-config-section">
-                        <div class="psmx-config-header">
-                            <label class="psmx-switch">
-                                <input type="checkbox" id="snow-enabled" ${this.config.snow.enabled ? 'checked' : ''}>
-                                <span class="psmx-slider"></span>
-                            </label>
-                            <h4>❄️ Nieve</h4>
-                        </div>
-                        <div class="psmx-config-options" id="snow-options">
-                            <label>
-                                Tipo:
-                                <select id="snow-type">
-                                    <option value="classic" ${this.config.snow.type === 'classic' ? 'selected' : ''}>Clásica</option>
-                                    <option value="stars" ${this.config.snow.type === 'stars' ? 'selected' : ''}>Estrellas</option>
-                                    <option value="mixed" ${this.config.snow.type === 'mixed' ? 'selected' : ''}>Mixta</option>
-                                </select>
-                            </label>
-                            <label>
-                                Cantidad: <span id="snow-count-value">${this.config.snow.count}</span>
-                                <input type="range" id="snow-count" min="10" max="150" value="${this.config.snow.count}">
-                            </label>
-                            <label>
-                                Velocidad: <span id="snow-speed-value">${this.config.snow.speed}x</span>
-                                <input type="range" id="snow-speed" min="0.5" max="3" step="0.5" value="${this.config.snow.speed}">
-                            </label>
-                            <label>
-                                Tamaño:
-                                <select id="snow-size">
-                                    <option value="small" ${this.config.snow.size === 'small' ? 'selected' : ''}>Pequeño</option>
-                                    <option value="medium" ${this.config.snow.size === 'medium' ? 'selected' : ''}>Mediano</option>
-                                    <option value="large" ${this.config.snow.size === 'large' ? 'selected' : ''}>Grande</option>
-                                </select>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Estrellas -->
-                    <div class="psmx-config-section">
-                        <div class="psmx-config-header">
-                            <label class="psmx-switch">
-                                <input type="checkbox" id="stars-enabled" ${this.config.stars.enabled ? 'checked' : ''}>
-                                <span class="psmx-slider"></span>
-                            </label>
-                            <h4>⭐ Estrellas Brillantes</h4>
-                        </div>
-                        <div class="psmx-config-options" id="stars-options">
-                            <label>
-                                Cantidad: <span id="stars-count-value">${this.config.stars.count}</span>
-                                <input type="range" id="stars-count" min="5" max="50" value="${this.config.stars.count}">
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Confeti -->
-                    <div class="psmx-config-section">
-                        <div class="psmx-config-header">
-                            <label class="psmx-switch">
-                                <input type="checkbox" id="confetti-enabled" ${this.config.confetti.enabled ? 'checked' : ''}>
-                                <span class="psmx-slider"></span>
-                            </label>
-                            <h4>🎊 Confeti Navideño</h4>
-                        </div>
-                        <div class="psmx-config-options" id="confetti-options">
-                            <label>
-                                Cantidad: <span id="confetti-count-value">${this.config.confetti.count}</span>
-                                <input type="range" id="confetti-count" min="10" max="100" value="${this.config.confetti.count}">
-                            </label>
-                        </div>
-                    </div>
-
-                    <button class="psmx-apply-btn">Aplicar Cambios</button>
-                </div>
-            </div>
-        `;
-
-        document.body.appendChild(panel);
-        this.bindPanelEvents();
-    }
-
-    // Eventos del panel
-    bindPanelEvents() {
-        const toggle = document.querySelector('.psmx-panel-toggle');
-        const panel = document.querySelector('.psmx-panel-content');
-        const close = document.querySelector('.psmx-panel-close');
-        const applyBtn = document.querySelector('.psmx-apply-btn');
-
-        toggle.addEventListener('click', () => {
-            panel.classList.toggle('active');
-        });
-
-        close.addEventListener('click', () => {
-            panel.classList.remove('active');
-        });
-
-        // Actualizar valores en tiempo real
-        const ranges = panel.querySelectorAll('input[type="range"]');
-        ranges.forEach(range => {
-            range.addEventListener('input', (e) => {
-                const valueSpan = document.getElementById(e.target.id + '-value');
-                if (valueSpan) {
-                    let value = e.target.value;
-                    if (e.target.id === 'snow-speed') {
-                        value += 'x';
-                    }
-                    valueSpan.textContent = value;
-                }
-            });
-        });
-
-        // Aplicar cambios
-        applyBtn.addEventListener('click', () => {
-            this.updateConfig();
-            this.saveConfig();
-            this.reload();
-            panel.classList.remove('active');
-        });
-    }
-
-    // Actualizar configuración desde el panel
-    updateConfig() {
-        // Luces
-        this.config.lights.enabled = document.getElementById('lights-enabled').checked;
-        this.config.lights.count = parseInt(document.getElementById('lights-count').value);
-        this.config.lights.showCable = document.getElementById('lights-cable').checked;
-
-        // Nieve
-        this.config.snow.enabled = document.getElementById('snow-enabled').checked;
-        this.config.snow.type = document.getElementById('snow-type').value;
-        this.config.snow.count = parseInt(document.getElementById('snow-count').value);
-        this.config.snow.speed = parseFloat(document.getElementById('snow-speed').value);
-        this.config.snow.size = document.getElementById('snow-size').value;
-
-        // Estrellas
-        this.config.stars.enabled = document.getElementById('stars-enabled').checked;
-        this.config.stars.count = parseInt(document.getElementById('stars-count').value);
-
-        // Confeti
-        this.config.confetti.enabled = document.getElementById('confetti-enabled').checked;
-        this.config.confetti.count = parseInt(document.getElementById('confetti-count').value);
-    }
-
-    // Recargar decoraciones
-    reload() {
-        // Limpiar todo
-        this.cleanup();
-
-        // Reinicializar
-        if (this.config.lights.enabled) {
-            this.initLights();
-        }
-
-        if (this.config.snow.enabled) {
-            this.initSnow();
-        }
-
-        if (this.config.stars.enabled) {
-            this.initStars();
-        }
-
-        if (this.config.confetti.enabled) {
-            this.initConfetti();
-        }
-    }
-
-    // Limpiar decoraciones
-    cleanup() {
-        // Detener animaciones
-        if (this.animations.snow) cancelAnimationFrame(this.animations.snow);
-        if (this.animations.stars) cancelAnimationFrame(this.animations.stars);
-        if (this.animations.confetti) cancelAnimationFrame(this.animations.confetti);
-
-        // Eliminar contenedores
-        Object.values(this.containers).forEach(container => {
-            if (container && container.parentNode) {
-                container.parentNode.removeChild(container);
-            }
-        });
-
-        this.containers = {};
     }
 
     // Inicializar luces
