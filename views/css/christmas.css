@@ -300,15 +300,15 @@ input:checked + .psmx-slider:before {
 /* Bombillas */
 .psmx-bulb {
     position: relative;
-    width: 20px;
-    height: 28px;
+    width: 10px;
+    height: 14px;
     background: var(--bulb-color, #ff0000);
     border-radius: 50% 50% 60% 60%;
     box-shadow:
+        0 0 8px var(--bulb-color, #ff0000),
         0 0 15px var(--bulb-color, #ff0000),
-        0 0 30px var(--bulb-color, #ff0000),
-        inset 0 -5px 10px rgba(0, 0, 0, 0.3),
-        0 8px 15px rgba(0, 0, 0, 0.4);
+        inset 0 -3px 5px rgba(0, 0, 0, 0.3),
+        0 4px 8px rgba(0, 0, 0, 0.4);
     animation: bulb-blink 2s ease-in-out infinite;
     transform-origin: top center;
 }
@@ -317,11 +317,11 @@ input:checked + .psmx-slider:before {
 .psmx-bulb::before {
     content: '';
     position: absolute;
-    top: -8px;
+    top: -5px;
     left: 50%;
     transform: translateX(-50%);
-    width: 2px;
-    height: 8px;
+    width: 1px;
+    height: 5px;
     background: #2d2d2d;
 }
 
@@ -329,30 +329,13 @@ input:checked + .psmx-slider:before {
 .psmx-bulb::after {
     content: '';
     position: absolute;
-    top: -3px;
+    top: -2px;
     left: 50%;
     transform: translateX(-50%);
-    width: 12px;
-    height: 4px;
+    width: 6px;
+    height: 2px;
     background: linear-gradient(180deg, #888 0%, #555 100%);
-    border-radius: 2px;
-}
-
-/* Efecto de brillo en la bombilla */
-.psmx-bulb:before {
-    content: '';
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 8px;
-    height: 12px;
-    background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.6) 0%,
-        rgba(255, 255, 255, 0) 100%
-    );
-    border-radius: 50%;
-    z-index: 1;
+    border-radius: 1px;
 }
 
 @keyframes bulb-blink {
@@ -428,8 +411,8 @@ input:checked + .psmx-slider:before {
     }
 
     .psmx-bulb {
-        width: 16px;
-        height: 22px;
+        width: 8px;
+        height: 11px;
     }
 
     .psmx-lights-wrapper {
@@ -453,8 +436,8 @@ input:checked + .psmx-slider:before {
     }
 
     .psmx-bulb {
-        width: 12px;
-        height: 18px;
+        width: 6px;
+        height: 9px;
     }
 }
 

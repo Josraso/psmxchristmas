@@ -10,7 +10,7 @@ class ChristmasDecorations {
         this.config = {
             lights: {
                 enabled: true,
-                count: 30,
+                count: 20,
                 colors: ['#ff0000', '#00ff00', '#ffff00', '#0000ff', '#ff00ff', '#00ffff'],
                 blinkSpeed: 2000,
                 showCable: true
