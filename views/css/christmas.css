@@ -1,0 +1,33 @@
+.christmas-lights {
+    display: flex;
+    justify-content: center;
+    padding: 0.5rem 0;
+    background: transparent;
+    z-index: 1002;
+    position: relative;
+}
+.christmas-lights .bulb {
+    width: 16px;
+    height: 24px;
+    margin: 0 4px;
+    border-radius: 50% 50% 60% 60%;
+    background: red;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    animation: blink 2s infinite alternate;
+}
+.christmas-lights .bulb:nth-child(2n) { background: green; }
+.christmas-lights .bulb:nth-child(3n) { background: yellow; }
+.christmas-lights .bulb:nth-child(4n) { background: blue; }
+@keyframes blink {
+    to { opacity: 0.3; }
+}
+#psmxchristmas-snow {
+    width: 100vw;
+    min-height: 120px;
+    display: block;
+    pointer-events: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1001;
+}
