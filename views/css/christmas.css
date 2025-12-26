@@ -107,6 +107,46 @@
     overflow-y: auto;
 }
 
+.psmx-quick-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.psmx-disable-all-btn,
+.psmx-enable-all-btn {
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.psmx-disable-all-btn {
+    background: #ff4444;
+    color: white;
+}
+
+.psmx-disable-all-btn:hover {
+    background: #cc0000;
+    transform: translateY(-1px);
+}
+
+.psmx-enable-all-btn {
+    background: #28a745;
+    color: white;
+}
+
+.psmx-enable-all-btn:hover {
+    background: #218838;
+    transform: translateY(-1px);
+}
+
 .psmx-config-section {
     margin-bottom: 20px;
     padding-bottom: 20px;
@@ -380,10 +420,20 @@ input:checked + .psmx-slider:before {
    EFECTOS ADICIONALES
    ======================================== */
 
-/* Sombra suave para los canvas */
+/* Canvas: Optimizaciones de rendimiento */
 .psmx-snow-canvas,
-.psmx-confetti-canvas {
-    filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.1));
+.psmx-confetti-canvas,
+.psmx-stars-container {
+    pointer-events: none !important;
+    will-change: contents;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+.psmx-christmas-lights,
+.psmx-lights-wrapper,
+.psmx-bulb {
+    pointer-events: none !important;
 }
 
 /* ========================================

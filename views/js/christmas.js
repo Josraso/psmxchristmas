@@ -224,6 +224,10 @@ class ChristmasDecorations {
                     <button class="psmx-panel-close">&times;</button>
                 </div>
                 <div class="psmx-panel-body">
+                    <div class="psmx-quick-actions">
+                        <button class="psmx-disable-all-btn">🚫 Desactivar Todo</button>
+                        <button class="psmx-enable-all-btn">✅ Activar Todo</button>
+                    </div>
                     ${lightsHtml}
                     ${snowHtml}
                     ${starsHtml}
@@ -243,6 +247,8 @@ class ChristmasDecorations {
         const panel = document.querySelector('.psmx-panel-content');
         const close = document.querySelector('.psmx-panel-close');
         const applyBtn = document.querySelector('.psmx-apply-btn');
+        const disableAllBtn = document.querySelector('.psmx-disable-all-btn');
+        const enableAllBtn = document.querySelector('.psmx-enable-all-btn');
 
         toggle.addEventListener('click', () => {
             panel.classList.toggle('active');
@@ -250,6 +256,22 @@ class ChristmasDecorations {
 
         close.addEventListener('click', () => {
             panel.classList.remove('active');
+        });
+
+        // Desactivar todo
+        disableAllBtn.addEventListener('click', () => {
+            document.getElementById('lights-enabled').checked = false;
+            document.getElementById('snow-enabled').checked = false;
+            document.getElementById('stars-enabled').checked = false;
+            document.getElementById('confetti-enabled').checked = false;
+        });
+
+        // Activar todo
+        enableAllBtn.addEventListener('click', () => {
+            document.getElementById('lights-enabled').checked = true;
+            document.getElementById('snow-enabled').checked = true;
+            document.getElementById('stars-enabled').checked = true;
+            document.getElementById('confetti-enabled').checked = true;
         });
 
         const ranges = panel.querySelectorAll('input[type="range"]');
@@ -392,7 +414,7 @@ class ChristmasDecorations {
         document.body.appendChild(canvas);
         this.containers.snow = canvas;
 
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext('2d', { alpha: true });
         const particles = [];
 
         // Crear partículas
@@ -406,54 +428,79 @@ class ChristmasDecorations {
                 radius: (Math.random() * 3 + 1) * sizeMultiplier,
                 density: Math.random() * this.config.snow.count,
                 type: this.config.snow.type === 'mixed' ? (Math.random() > 0.5 ? 'snow' : 'star') :
-                      this.config.snow.type === 'stars' ? 'star' : 'snow'
+                      this.config.snow.type === 'stars' ? 'star' : 'snow',
+                speedY: Math.random() * 0.5 + 0.5,
+                speedX: Math.random() * 0.5 - 0.25
             });
         }
 
         let angle = 0;
+        let lastTime = performance.now();
+        const targetFPS = 30; // Limitar a 30 FPS para mejor rendimiento
+        const frameDelay = 1000 / targetFPS;
+        let frameTimer = 0;
 
-        const animate = () => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const animate = (currentTime) => {
+            if (!this.animations.snow) return; // Parar si se desactivó
 
-            angle += 0.01;
+            const deltaTime = currentTime - lastTime;
+            frameTimer += deltaTime;
 
-            particles.forEach((p, i) => {
-                if (p.type === 'snow') {
-                    // Copos de nieve clásicos
-                    ctx.fillStyle = `rgba(255, 255, 255, ${this.config.snow.opacity})`;
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                    ctx.fill();
-                } else {
-                    // Estrellas de nieve
-                    this.drawSnowflake(ctx, p.x, p.y, p.radius * 2, 6);
-                }
+            // Solo actualizar cada frameDelay ms (throttling)
+            if (frameTimer >= frameDelay) {
+                // Limitar delta time para evitar saltos cuando se cambia de pestaña
+                const safeDelta = Math.min(deltaTime, 100);
 
-                // Actualizar posición
-                p.y += (Math.cos(angle + p.density) + 1 + p.radius / 2) * this.config.snow.speed;
-                p.x += Math.sin(angle) * 2 * this.config.snow.speed;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                // Resetear si sale de la pantalla
-                if (p.x > canvas.width + 5 || p.x < -5 || p.y > canvas.height) {
-                    particles[i] = {
-                        x: Math.random() * canvas.width,
-                        y: -10,
-                        radius: p.radius,
-                        density: p.density,
-                        type: p.type
-                    };
-                }
-            });
+                angle += 0.01 * (safeDelta / 16.67); // Normalizar a 60fps
 
+                particles.forEach((p, i) => {
+                    if (p.type === 'snow') {
+                        // Copos de nieve clásicos
+                        ctx.fillStyle = `rgba(255, 255, 255, ${this.config.snow.opacity})`;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else {
+                        // Estrellas de nieve (simplificadas)
+                        this.drawSnowflake(ctx, p.x, p.y, p.radius * 2, 6);
+                    }
+
+                    // Actualizar posición con delta time
+                    const speedMultiplier = (safeDelta / 16.67) * this.config.snow.speed;
+                    p.y += p.speedY * speedMultiplier;
+                    p.x += Math.sin(angle) * 0.5 * speedMultiplier;
+
+                    // Resetear si sale de la pantalla
+                    if (p.y > canvas.height + 10) {
+                        p.y = -10;
+                        p.x = Math.random() * canvas.width;
+                    }
+                    if (p.x > canvas.width + 10) {
+                        p.x = -10;
+                    } else if (p.x < -10) {
+                        p.x = canvas.width + 10;
+                    }
+                });
+
+                frameTimer = 0;
+            }
+
+            lastTime = currentTime;
             this.animations.snow = requestAnimationFrame(animate);
         };
 
-        animate();
+        this.animations.snow = requestAnimationFrame(animate);
 
-        // Ajustar tamaño en resize
+        // Ajustar tamaño en resize (debounced)
+        let resizeTimeout;
         window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }, 250);
         });
     }
 
@@ -537,7 +584,7 @@ class ChristmasDecorations {
         document.body.appendChild(canvas);
         this.containers.confetti = canvas;
 
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext('2d', { alpha: true });
         const particles = [];
 
         // Crear partículas de confeti
@@ -553,46 +600,61 @@ class ChristmasDecorations {
             });
         }
 
-        const animate = () => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let lastTime = performance.now();
+        const targetFPS = 30;
+        const frameDelay = 1000 / targetFPS;
+        let frameTimer = 0;
 
-            particles.forEach((p, i) => {
-                ctx.save();
-                ctx.translate(p.x, p.y);
-                ctx.rotate((p.rotation * Math.PI) / 180);
+        const animate = (currentTime) => {
+            if (!this.animations.confetti) return;
 
-                ctx.fillStyle = p.color;
-                ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size / 2);
+            const deltaTime = currentTime - lastTime;
+            frameTimer += deltaTime;
 
-                ctx.restore();
+            if (frameTimer >= frameDelay) {
+                const safeDelta = Math.min(deltaTime, 100);
+                const speedMultiplier = safeDelta / 16.67;
 
-                // Actualizar
-                p.y += p.speed;
-                p.rotation += p.rotationSpeed;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                // Resetear
-                if (p.y > canvas.height) {
-                    particles[i] = {
-                        x: Math.random() * canvas.width,
-                        y: -20,
-                        rotation: Math.random() * 360,
-                        rotationSpeed: p.rotationSpeed,
-                        speed: p.speed,
-                        color: p.color,
-                        size: p.size
-                    };
-                }
-            });
+                particles.forEach((p, i) => {
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate((p.rotation * Math.PI) / 180);
 
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size / 2);
+
+                    ctx.restore();
+
+                    // Actualizar con delta time
+                    p.y += p.speed * speedMultiplier;
+                    p.rotation += p.rotationSpeed * speedMultiplier;
+
+                    // Resetear
+                    if (p.y > canvas.height + 20) {
+                        p.y = -20;
+                        p.x = Math.random() * canvas.width;
+                    }
+                });
+
+                frameTimer = 0;
+            }
+
+            lastTime = currentTime;
             this.animations.confetti = requestAnimationFrame(animate);
         };
 
-        animate();
+        this.animations.confetti = requestAnimationFrame(animate);
 
-        // Ajustar tamaño en resize
+        // Ajustar tamaño en resize (debounced)
+        let resizeTimeout;
         window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }, 250);
         });
     }
 }
